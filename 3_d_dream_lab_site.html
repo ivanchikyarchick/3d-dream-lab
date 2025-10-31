@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>3D Dream Lab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body, html {
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      touch-action: pan-y;
+    }
+
+    #introVideo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1000;
+    }
+
+    #skipBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1100;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 12px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+
+    #skipBtn:hover,
+    #skipBtn:active {
+      background: #fff;
+      color: #000;
+      transform: scale(1.05);
+    }
+
+    #mainContent {
+      display: none;
+      height: 100vh;
+      width: 100%;
+      background: url('3D Dream Lab.png') center/cover no-repeat;
+      background-color: #0b0b0b;
+      color: white;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      animation: fadeIn 1.5s ease forwards;
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    .glow {
+      color: #fff;
+      text-shadow: 0 0 15px #fff, 0 0 30px #fff, 0 0 60px #fff;
+      animation: neonPulse 3s infinite alternate;
+    }
+
+    @keyframes neonPulse {
+      0% { text-shadow: 0 0 10px #fff, 0 0 20px #fff; }
+      100% { text-shadow: 0 0 25px #fff, 0 0 50px #fff; }
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      margin-bottom: 30px;
+      animation: slideDown 1s ease;
+      line-height: 1.2;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      max-width: 300px;
+      animation: fadeUp 1.2s ease;
+    }
+
+    a {
+      text-decoration: none;
+      width: 100%;
+    }
+
+    .btn {
+      background: linear-gradient(145deg, #ffffff10, #ffffff05);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 1rem;
+      padding: 14px 20px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 20px rgba(255,255,255,0.1);
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .btn:hover,
+    .btn:active {
+      background: #fff;
+      color: #111;
+      transform: scale(1.03);
+      box-shadow: 0 6px 25px rgba(255,255,255,0.3);
+    }
+
+    footer {
+      position: absolute;
+      bottom: 15px;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.8px;
+      text-shadow: 0 0 10px rgba(255,255,255,0.5);
+      width: 90%;
+      text-align: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    canvas#stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    /* Медіа-запити для дуже маленьких екранів */
+    @media (max-width: 360px) {
+      h1 {
+        font-size: 1.9rem;
+      }
+      .btn {
+        font-size: 0.95rem;
+        padding: 12px 18px;
+      }
+      #skipBtn {
+        bottom: 15px;
+        right: 15px;
+        font-size: 0.8rem;
+        padding: 7px 14px;
+      }
+    }
+
+    @media (max-height: 600px) {
+      h1 {
+        margin-bottom: 20px;
+      }
+      .buttons {
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <video id="introVideo" autoplay muted playsinline>
+    <source src="intro.mp4" type="video/mp4">
+  </video>
+  <button id="skipBtn">Пропустити</button>
+
+  <div id="mainContent">
+    <canvas id="stars"></canvas>
+    <h1 class="glow">3D Dream Lab</h1>
+    <div class="buttons">
+      <a href="https://t.me/DreamLab_3D" target="_blank" class="btn">Телеграм Канал</a>
+      <a href="https://www.tiktok.com/@3d.dream.lab?lang=uk-UA" target="_blank" class="btn">Тікток</a>
+      <a href="https://t.me/ivasites" target="_blank" class="btn">Замовити</a>
+    </div>
+    <footer>© 2025 3D Dream Lab | 3D Printing & Innovation</footer>
+  </div>
+
+  <script>
+    const video = document.getElementById('introVideo');
+    const mainContent = document.getElementById('mainContent');
+    const skipBtn = document.getElementById('skipBtn');
+
+    function showSite() {
+      video.style.display = 'none';
+      skipBtn.style.display = 'none';
+      document.body.style.overflow = 'auto';
+      mainContent.style.display = 'flex';
+      initStars();
+    }
+
+    skipBtn.addEventListener('click', showSite);
+    skipBtn.addEventListener('touchstart', e => {
+      e.preventDefault();
+      showSite();
+    });
+
+    video.addEventListener('ended', showSite);
+
+    // Додано playsinline для мобільних
+    video.setAttribute('playsinline', '');
+
+    function initStars() {
+      const canvas = document.getElementById('stars');
+      const ctx = canvas.getContext('2d');
+      let w = canvas.width = window.innerWidth;
+      let h = canvas.height = window.innerHeight;
+      let stars = [];
+      let cursor = { x: w/2, y: h/2 };
+
+      // Кількість зірок — менше на мобільних
+      const starCount = window.innerWidth < 500 ? 60 : 100;
+
+      for (let i = 0; i < starCount; i++) {
+        stars.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          r: Math.random() * 1.5 + 0.3,
+          dx: (Math.random() - 0.5) * 0.15,
+          dy: (Math.random() - 0.5) * 0.15
+        });
+      }
+
+      // Підтримка touch
+      const updateCursor = (e) => {
+        const touch = e.touches ? e.touches[0] : e;
+        cursor.x = touch.clientX;
+        cursor.y = touch.clientY;
+      };
+
+      window.addEventListener('mousemove', updateCursor);
+      window.addEventListener('touchmove', updateCursor, { passive: true });
+      window.addEventListener('touchstart', updateCursor, { passive: true });
+
+      function draw() {
+        ctx.clearRect(0, 0, w, h);
+        for (let s of stars) {
+          const distX = (cursor.x - w / 2) * 0.00015;
+          const distY = (cursor.y - h / 2) * 0.00015;
+          s.x += s.dx + distX * 40;
+          s.y += s.dy + distY * 40;
+
+          if (s.x < 0) s.x = w;
+          if (s.x > w) s.x = 0;
+          if (s.y < 0) s.y = h;
+          if (s.y > h) s.y = 0;
+
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(255,255,255,0.8)';
+          ctx.fill();
+        }
+        requestAnimationFrame(draw);
+      }
+
+      draw();
+
+      window.addEventListener('resize', () => {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      });
+    }
+  </script>
+</body>
+</html>
